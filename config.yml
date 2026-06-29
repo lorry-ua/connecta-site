@@ -1,0 +1,61 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+locale: 'uk'
+
+collections:
+  - name: "news_uk"
+    label: "Новини (УКР)"
+    folder: "uk/news"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Заголовок", name: "title", widget: "string" }
+      - { label: "Дата", name: "date", widget: "datetime", format: "DD.MM.YYYY" }
+      - { label: "Тег", name: "tag", widget: "select", options: ["Новина", "Анонс", "Звіт", "Подія"], default: "Новина" }
+      - { label: "Короткий опис", name: "excerpt", widget: "text" }
+      - { label: "Зображення", name: "image", widget: "image", required: false }
+      - { label: "Текст", name: "body", widget: "markdown" }
+
+  - name: "news_en"
+    label: "News (ENG)"
+    folder: "en/news"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", format: "DD.MM.YYYY" }
+      - { label: "Tag", name: "tag", widget: "select", options: ["News", "Announcement", "Report", "Event"], default: "News" }
+      - { label: "Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Image", name: "image", widget: "image", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "projects_uk"
+    label: "Проекти (УКР)"
+    folder: "uk/projects"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Назва проекту", name: "title", widget: "string" }
+      - { label: "Напрямок", name: "direction", widget: "select", options: ["Культура", "Екологія", "Енергетика", "Медицина", "Суспільство", "Освіта"] }
+      - { label: "Статус", name: "status", widget: "select", options: ["В розробці", "Активний", "Завершено"] }
+      - { label: "Короткий опис", name: "excerpt", widget: "text" }
+      - { label: "Зображення", name: "image", widget: "image", required: false }
+      - { label: "Опис", name: "body", widget: "markdown" }
+
+  - name: "projects_en"
+    label: "Projects (ENG)"
+    folder: "en/projects"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Project Title", name: "title", widget: "string" }
+      - { label: "Direction", name: "direction", widget: "select", options: ["Culture", "Ecology", "Energy", "Medicine", "Society", "Education"] }
+      - { label: "Status", name: "status", widget: "select", options: ["In Development", "Active", "Completed"] }
+      - { label: "Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Image", name: "image", widget: "image", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
