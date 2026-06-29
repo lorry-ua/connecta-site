@@ -141,7 +141,7 @@ async function loadNews(lang) {
     // Будуємо HTML картки
     newsGrid.innerHTML = newsItems.map(item => `
       <article class="news-card">
-        ${item.image ? `<img src="${item.image}" alt="${item.title}" style="width:100%;height:180px;object-fit:cover;border-radius:8px;margin-bottom:8px;">` : ''}
+       ${item.image ? `<img src="${item.image}" alt="${item.title}" style="width:100%;height:auto;border-radius:8px;margin-bottom:8px;">` : ''}
         <div class="news-card__tag">${item.tag || (lang === 'uk' ? 'Новина' : 'News')}</div>
         <div class="news-card__date">${item.date || ''}</div>
         <h3 class="news-card__title">${item.title || ''}</h3>
