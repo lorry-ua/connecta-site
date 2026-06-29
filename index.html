@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css"/>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
 
@@ -162,7 +163,6 @@
     <p class="section__label" data-uk="Що відбувається" data-en="What's Happening">Що відбувається</p>
     <h2 class="section__title" data-uk="Новини та анонси" data-en="News & Announcements">Новини та анонси</h2>
     <div class="news__grid" id="news-grid">
-      <!-- News cards will be populated by JS or CMS -->
       <article class="news-card">
         <div class="news-card__tag" data-uk="Анонс" data-en="Announcement">Анонс</div>
         <div class="news-card__date">29.06.2025</div>
@@ -225,19 +225,19 @@
         </div>
       </div>
       <form class="contact-form" id="contact-form" name="contact" method="POST" data-netlify="true">
-  <input type="hidden" name="form-name" value="contact" />
+        <input type="hidden" name="form-name" value="contact" />
         <h3 data-uk="Напишіть нам" data-en="Write to Us">Напишіть нам</h3>
         <div class="form-group">
           <label data-uk="Ваше ім'я" data-en="Your Name">Ваше ім'я</label>
-          <input type="text" placeholder="Іван Іваненко" required />
+          <input type="text" name="name" placeholder="Іван Іваненко" required />
         </div>
         <div class="form-group">
           <label>Email</label>
-          <input type="email" placeholder="email@example.com" required />
+          <input type="email" name="email" placeholder="email@example.com" required />
         </div>
         <div class="form-group">
           <label data-uk="Повідомлення" data-en="Message">Повідомлення</label>
-          <textarea rows="4" placeholder="Ваше повідомлення..." required></textarea>
+          <textarea name="message" rows="4" placeholder="Ваше повідомлення..." required></textarea>
         </div>
         <button type="submit" class="btn btn--yellow" data-uk="Надіслати" data-en="Send">Надіслати</button>
       </form>
@@ -275,12 +275,11 @@
   </div>
   <div class="footer__bottom">
     <div class="container">
-      <p data-uk="© 2025 ГО «Коннекта». Всі права захищені." data-en="© 2025 NGO Connecta. All rights reserved.">© 2025 ГО «Коннекта». Всі права захищені.</p>
+      <p data-uk="© 2025 ГО «Коннекта». Всі права захищені." data-en="© 2026 NGO Connecta. All rights reserved.">© 2025 ГО «Коннекта». Всі права захищені.</p>
     </div>
   </div>
 </footer>
 
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
