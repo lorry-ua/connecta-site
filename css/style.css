@@ -391,6 +391,12 @@ img { max-width: 100%; display: block; }
   transition: transform var(--transition);
 }
 .news-card:hover { transform: translateY(-4px); }
+.news-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
 .news-card__tag {
   display: inline-block;
   background: rgba(0,48,135,0.08);
