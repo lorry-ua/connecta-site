@@ -274,7 +274,7 @@
         <div class="news-single__tag">${foundItem.tag || 'Новина'}</div>
         <div class="news-single__date">${foundItem.date || ''}</div>
         <h1 class="news-single__title">${foundItem.title}</h1>
-        ${foundItem.image ? `<img src="${foundItem.image}" alt="${foundItem.title}" class="news-single__image">` : ''}
+        ${foundItem.image ? `<img src="${foundItem.image}" alt="${foundItem.title}" style="width:100%;height:auto;border-radius:16px;margin-bottom:40px;">` : ''}
         <div class="news-single__body">${parseMarkdown(foundItem.body)}</div>
       `;
 
