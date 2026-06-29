@@ -28,13 +28,14 @@ function setLang(lang) {
     document.querySelectorAll('input[placeholder="John Smith"]').forEach(el => el.placeholder = 'Іван Іваненко');
     document.querySelectorAll('textarea[placeholder="Your message..."]').forEach(el => el.placeholder = 'Ваше повідомлення...');
   }
+
+  // Перезавантажити новини при зміні мови
+  loadNews(lang);
 }
 
 document.querySelectorAll('.lang-btn').forEach(btn => {
   btn.addEventListener('click', () => setLang(btn.dataset.lang));
 });
-
-setLang(currentLang);
 
 // ── MOBILE BURGER ──
 const burger = document.getElementById('burger');
@@ -68,12 +69,95 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1 });
 
-document.querySelectorAll('.direction-card, .news-card, .about__card, .contact-item').forEach(el => {
-  el.style.opacity = '0';
-  el.style.transform = 'translateY(20px)';
-  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-  observer.observe(el);
-});
+function observeCards() {
+  document.querySelectorAll('.direction-card, .news-card, .about__card, .contact-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+}
+
+// ── PARSE FRONTMATTER ──
+function parseFrontmatter(text) {
+  const match = text.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  if (!match) return null;
+
+  const frontmatter = {};
+  match[1].split('\n').forEach(line => {
+    const [key, ...rest] = line.split(':');
+    if (key && rest.length) {
+      frontmatter[key.trim()] = rest.join(':').trim().replace(/^["']|["']$/g, '');
+    }
+  });
+  frontmatter.body = match[2].trim();
+  return frontmatter;
+}
+
+// ── LOAD NEWS FROM GITHUB ──
+async function loadNews(lang) {
+  const newsGrid = document.getElementById('news-grid');
+  const folder = lang === 'uk' ? 'uk/news' : 'en/news';
+
+  try {
+    // Отримуємо список файлів з GitHub API
+    const repoOwner = 'lorry-ua';
+    const repoName = 'connecta-site';
+    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folder}`;
+
+    const response = await fetch(apiUrl);
+    if (!response.ok) throw new Error('Не вдалось завантажити новини');
+
+    const files = await response.json();
+    const mdFiles = files.filter(f => f.name.endsWith('.md'));
+
+    if (mdFiles.length === 0) {
+      newsGrid.innerHTML = `
+        <article class="news-card">
+          <div class="news-card__tag">${lang === 'uk' ? 'Анонс' : 'Announcement'}</div>
+          <div class="news-card__date">29.06.2025</div>
+          <h3 class="news-card__title">${lang === 'uk' ? 'ГО «Коннекта» розпочинає свою діяльність' : 'NGO Connecta begins its activities'}</h3>
+          <p class="news-card__excerpt">${lang === 'uk' ? 'Ми раді оголосити про початок роботи нашої організації.' : 'We are pleased to announce the launch of our organization.'}</p>
+        </article>`;
+      return;
+    }
+
+    // Завантажуємо кожен файл
+    const newsItems = await Promise.all(
+      mdFiles.map(async file => {
+        const fileResponse = await fetch(file.download_url);
+        const text = await fileResponse.text();
+        return parseFrontmatter(text);
+      })
+    );
+
+    // Сортуємо за датою (новіші першими)
+    newsItems.sort((a, b) => {
+      const dateA = a.date ? a.date.split('.').reverse().join('') : '0';
+      const dateB = b.date ? b.date.split('.').reverse().join('') : '0';
+      return dateB.localeCompare(dateA);
+    });
+
+    // Будуємо HTML картки
+    newsGrid.innerHTML = newsItems.map(item => `
+      <article class="news-card">
+        ${item.image ? `<img src="${item.image}" alt="${item.title}" style="width:100%;height:180px;object-fit:cover;border-radius:8px;margin-bottom:8px;">` : ''}
+        <div class="news-card__tag">${item.tag || (lang === 'uk' ? 'Новина' : 'News')}</div>
+        <div class="news-card__date">${item.date || ''}</div>
+        <h3 class="news-card__title">${item.title || ''}</h3>
+        <p class="news-card__excerpt">${item.excerpt || ''}</p>
+        <a href="news-single.html?file=${encodeURIComponent(item.title)}&lang=${lang}" class="news-card__link">
+          ${lang === 'uk' ? 'Читати далі →' : 'Read more →'}
+        </a>
+      </article>
+    `).join('');
+
+    observeCards();
+
+  } catch (error) {
+    console.error('Помилка завантаження новин:', error);
+  }
+}
 
 // ── CONTACT FORM ──
 const form = document.getElementById('contact-form');
@@ -113,3 +197,7 @@ form.addEventListener('submit', async (e) => {
     }, 3000);
   }
 });
+
+// ── INIT ──
+setLang(currentLang);
+observeCards();
