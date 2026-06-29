@@ -77,17 +77,39 @@ document.querySelectorAll('.direction-card, .news-card, .about__card, .contact-i
 
 // ── CONTACT FORM ──
 const form = document.getElementById('contact-form');
-form.addEventListener('submit', (e) => {
+form.addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = form.querySelector('button[type="submit"]');
   const originalText = btn.textContent;
-  btn.textContent = currentLang === 'uk' ? '✓ Надіслано!' : '✓ Sent!';
-  btn.style.background = '#22c55e';
-  btn.style.color = '#fff';
-  setTimeout(() => {
-    btn.textContent = originalText;
-    btn.style.background = '';
-    btn.style.color = '';
+
+  const formData = new FormData(form);
+
+  try {
+    await fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(formData).toString()
+    });
+
+    btn.textContent = currentLang === 'uk' ? '✓ Надіслано!' : '✓ Sent!';
+    btn.style.background = '#22c55e';
+    btn.style.color = '#fff';
     form.reset();
-  }, 3000);
+
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 3000);
+
+  } catch (error) {
+    btn.textContent = currentLang === 'uk' ? '✗ Помилка. Спробуй ще.' : '✗ Error. Try again.';
+    btn.style.background = '#ef4444';
+    btn.style.color = '#fff';
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 3000);
+  }
 });
