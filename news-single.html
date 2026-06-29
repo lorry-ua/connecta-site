@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Новина | ГО "Коннекта"</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css"/>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <style>
+    .news-single {
+      padding: 120px 0 80px;
+      min-height: 100vh;
+    }
+    .news-single__back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--blue);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 40px;
+      transition: gap 0.2s ease;
+    }
+    .news-single__back:hover { gap: 12px; }
+    .news-single__tag {
+      display: inline-block;
+      background: rgba(0,48,135,0.08);
+      color: var(--blue);
+      padding: 4px 14px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+    .news-single__date {
+      font-size: 14px;
+      color: var(--gray-text);
+      margin-bottom: 20px;
+    }
+    .news-single__title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: clamp(26px, 4vw, 42px);
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 32px;
+      letter-spacing: -0.5px;
+    }
+    .news-single__image {
+      width: 100%;
+      max-height: 480px;
+      object-fit: cover;
+      border-radius: 16px;
+      margin-bottom: 40px;
+    }
+    .news-single__body {
+      font-size: 17px;
+      line-height: 1.85;
+      color: #374151;
+      max-width: 720px;
+    }
+    .news-single__body p { margin-bottom: 20px; }
+    .news-single__body h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--text);
+      margin: 36px 0 16px;
+    }
+    .news-single__body h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--text);
+      margin: 28px 0 12px;
+    }
+    .news-single__body ul,
+    .news-single__body ol {
+      padding-left: 24px;
+      margin-bottom: 20px;
+    }
+    .news-single__body li { margin-bottom: 8px; }
+    .news-single__body strong { color: var(--text); font-weight: 700; }
+    .news-single__loading {
+      text-align: center;
+      padding: 80px 0;
+      color: var(--gray-text);
+      font-size: 17px;
+    }
+    .news-single__error {
+      text-align: center;
+      padding: 80px 0;
+      color: var(--gray-text);
+    }
+    .news-single__error h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 24px;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header" id="header">
+  <div class="container header__inner">
+    <a href="index.html" class="logo">
+      <span class="logo__icon">◈</span>
+      <span class="logo__text">Коннекта <em>NGO</em></span>
+    </a>
+    <nav class="nav" id="nav">
+      <a href="index.html#about" class="nav__link">Про нас</a>
+      <a href="index.html#directions" class="nav__link">Напрямки</a>
+      <a href="index.html#projects" class="nav__link">Проекти</a>
+      <a href="index.html#news" class="nav__link">Новини</a>
+      <a href="index.html#contacts" class="nav__link">Контакти</a>
+    </nav>
+    <div class="header__right">
+      <div class="lang-switch">
+        <button class="lang-btn active" data-lang="uk">УКР</button>
+        <span>|</span>
+        <button class="lang-btn" data-lang="en">ENG</button>
+      </div>
+      <button class="burger" id="burger" aria-label="Меню">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- NEWS SINGLE -->
+<section class="news-single">
+  <div class="container">
+    <a href="index.html#news" class="news-single__back">← Усі новини</a>
+    <div id="news-content">
+      <div class="news-single__loading">⏳ Завантаження...</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <a href="index.html" class="logo logo--light">
+        <span class="logo__icon">◈</span>
+        <span class="logo__text">Коннекта <em>NGO</em></span>
+      </a>
+      <p class="footer__desc">Громадська організація «Коннекта» — проекти заради суспільства.</p>
+    </div>
+    <div class="footer__nav">
+      <h4>Навігація</h4>
+      <a href="index.html#about">Про нас</a>
+      <a href="index.html#directions">Напрямки</a>
+      <a href="index.html#projects">Проекти</a>
+      <a href="index.html#news">Новини</a>
+      <a href="index.html#contacts">Контакти</a>
+    </div>
+    <div class="footer__nav">
+      <h4>Напрямки</h4>
+      <a href="index.html#directions">Культура</a>
+      <a href="index.html#directions">Екологія</a>
+      <a href="index.html#directions">Енергетика</a>
+      <a href="index.html#directions">Медицина</a>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <div class="container">
+      <p>© 2025 ГО «Коннекта». Всі права захищені.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── HEADER ──
+  const header = document.getElementById('header');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 30);
+  });
+
+  // ── BURGER ──
+  const burger = document.getElementById('burger');
+  const nav = document.getElementById('nav');
+  burger.addEventListener('click', () => {
+    nav.classList.toggle('open');
+  });
+
+  // ── PARSE MARKDOWN (простий парсер) ──
+  function parseMarkdown(md) {
+    return md
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/^- (.+)$/gm, '<li>$1</li>')
+      .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/^(?!<[h|u|o])/gm, '')
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line)
+      .map(line => {
+        if (line.startsWith('<h') || line.startsWith('<ul') || line.startsWith('<li')) return line;
+        return `<p>${line}</p>`;
+      })
+      .join('\n');
+  }
+
+  // ── PARSE FRONTMATTER ──
+  function parseFrontmatter(text) {
+    const match = text.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+    if (!match) return null;
+    const frontmatter = {};
+    match[1].split('\n').forEach(line => {
+      const [key, ...rest] = line.split(':');
+      if (key && rest.length) {
+        frontmatter[key.trim()] = rest.join(':').trim().replace(/^["']|["']$/g, '');
+      }
+    });
+    frontmatter.body = match[2].trim();
+    return frontmatter;
+  }
+
+  // ── LOAD NEWS ──
+  async function loadNewsArticle() {
+    const params = new URLSearchParams(window.location.search);
+    const title = params.get('file');
+    const lang = params.get('lang') || 'uk';
+    const folder = lang === 'uk' ? 'uk/news' : 'en/news';
+
+    const repoOwner = 'lorry-ua';
+    const repoName = 'connecta-site';
+    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folder}`;
+
+    const contentDiv = document.getElementById('news-content');
+
+    try {
+      const response = await fetch(apiUrl);
+      const files = await response.json();
+      const mdFiles = files.filter(f => f.name.endsWith('.md'));
+
+      // Знаходимо потрібний файл за заголовком
+      let foundItem = null;
+      for (const file of mdFiles) {
+        const fileResponse = await fetch(file.download_url);
+        const text = await fileResponse.text();
+        const parsed = parseFrontmatter(text);
+        if (parsed && parsed.title === decodeURIComponent(title)) {
+          foundItem = parsed;
+          break;
+        }
+      }
+
+      if (!foundItem) {
+        contentDiv.innerHTML = `
+          <div class="news-single__error">
+            <h2>Новину не знайдено</h2>
+            <p>Можливо її було видалено або переміщено.</p>
+            <a href="index.html#news" class="btn btn--primary" style="margin-top:24px">← Повернутись до новин</a>
+          </div>`;
+        return;
+      }
+
+      // Оновлюємо заголовок сторінки
+      document.title = `${foundItem.title} | ГО "Коннекта"`;
+
+      contentDiv.innerHTML = `
+        <div class="news-single__tag">${foundItem.tag || 'Новина'}</div>
+        <div class="news-single__date">${foundItem.date || ''}</div>
+        <h1 class="news-single__title">${foundItem.title}</h1>
+        ${foundItem.image ? `<img src="${foundItem.image}" alt="${foundItem.title}" class="news-single__image">` : ''}
+        <div class="news-single__body">${parseMarkdown(foundItem.body)}</div>
+      `;
+
+    } catch (error) {
+      contentDiv.innerHTML = `
+        <div class="news-single__error">
+          <h2>Помилка завантаження</h2>
+          <p>Спробуйте оновити сторінку.</p>
+          <a href="index.html#news" class="btn btn--primary" style="margin-top:24px">← Повернутись до новин</a>
+        </div>`;
+    }
+  }
+
+  loadNewsArticle();
+</script>
+
+</body>
+</html>
