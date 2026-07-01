@@ -59,3 +59,13 @@ collections:
       - { label: "Excerpt", name: "excerpt", widget: "text" }
       - { label: "Image", name: "image", widget: "image", required: false }
       - { label: "Body", name: "body", widget: "markdown" }
+      
+- name: "partners"
+    label: "Партнери"
+    folder: "partners"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Назва партнера", name: "title", widget: "string" }
+      - { label: "Логотип", name: "logo", widget: "image" }
+      - { label: "Посилання на сайт", name: "url", widget: "string", required: false }
