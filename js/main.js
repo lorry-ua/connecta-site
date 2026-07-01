@@ -238,7 +238,49 @@ async function loadPartners() {
   }
 }
 
+// ── LOAD PROJECTS ──
+async function loadProjects(lang) {
+  const grid = document.getElementById('projects-grid');
+  if (!grid) return;
+
+  const repoOwner = 'lorry-ua';
+  const repoName = 'connecta-site';
+  const folder = lang === 'uk' ? 'uk/projects' : 'en/projects';
+  const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folder}`;
+
+  try {
+    const response = await fetch(apiUrl);
+    const files = await response.json();
+    const mdFiles = files.filter(f => f.name.endsWith('.md'));
+
+    if (mdFiles.length === 0) return;
+
+    const projects = await Promise.all(
+      mdFiles.map(async file => {
+        const fileResponse = await fetch(file.download_url);
+        const text = await fileResponse.text();
+        return parseFrontmatter(text);
+      })
+    );
+
+    grid.innerHTML = projects.map(item => `
+      <article class="news-card">
+        ${item.image ? `<img src="${item.image}" alt="${item.title}" style="width:100%;height:auto;border-radius:8px;margin-bottom:8px;">` : ''}
+        <div class="news-card__tag">${item.direction || ''}</div>
+        <div class="news-card__tag" style="background:rgba(34,197,94,0.1);color:#16a34a;">${item.status || ''}</div>
+        <h3 class="news-card__title">${item.title || ''}</h3>
+        <p class="news-card__excerpt">${item.excerpt || ''}</p>
+      </article>
+    `).join('');
+
+    observeCards();
+  } catch (error) {
+    console.error('Помилка завантаження проектів:', error);
+  }
+}
+
 // ── INIT ──
 setLang(currentLang);
 observeCards();
 loadPartners();
+loadProjects(currentLang);
