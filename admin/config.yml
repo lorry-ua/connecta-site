@@ -59,8 +59,8 @@ collections:
       - { label: "Excerpt", name: "excerpt", widget: "text" }
       - { label: "Image", name: "image", widget: "image", required: false }
       - { label: "Body", name: "body", widget: "markdown" }
-      
-- name: "partners"
+
+  - name: "partners"
     label: "Партнери"
     folder: "partners"
     create: true
