@@ -198,6 +198,47 @@ form.addEventListener('submit', async (e) => {
   }
 });
 
+// ── LOAD PARTNERS ──
+async function loadPartners() {
+  const grid = document.getElementById('partners-grid');
+  if (!grid) return;
+
+  const repoOwner = 'lorry-ua';
+  const repoName = 'connecta-site';
+  const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/partners`;
+
+  try {
+    const response = await fetch(apiUrl);
+    const files = await response.json();
+    const mdFiles = files.filter(f => f.name.endsWith('.md'));
+
+    if (mdFiles.length === 0) return;
+
+    const partners = await Promise.all(
+      mdFiles.map(async file => {
+        const fileResponse = await fetch(file.download_url);
+        const text = await fileResponse.text();
+        return parseFrontmatter(text);
+      })
+    );
+
+    grid.innerHTML = partners.map(partner => `
+      <div class="partner-item">
+        ${partner.url
+          ? `<a href="${partner.url}" target="_blank" rel="noopener">
+               <img src="${partner.logo}" alt="${partner.title}">
+             </a>`
+          : `<img src="${partner.logo}" alt="${partner.title}">`
+        }
+      </div>
+    `).join('');
+
+  } catch (error) {
+    console.error('Помилка завантаження партнерів:', error);
+  }
+}
+
 // ── INIT ──
 setLang(currentLang);
 observeCards();
+loadPartners();
