@@ -29,8 +29,8 @@ function setLang(lang) {
     document.querySelectorAll('textarea[placeholder="Your message..."]').forEach(el => el.placeholder = 'Ваше повідомлення...');
   }
 
-  // Перезавантажити новини при зміні мови
   loadNews(lang);
+  loadProjects(lang);
 }
 
 document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -94,19 +94,19 @@ function parseFrontmatter(text) {
   return frontmatter;
 }
 
-// ── LOAD NEWS FROM GITHUB ──
+// ── LOAD NEWS ──
 async function loadNews(lang) {
   const newsGrid = document.getElementById('news-grid');
+  if (!newsGrid) return;
+
+  const repoOwner = 'lorry-ua';
+  const repoName = 'connecta-site';
   const folder = lang === 'uk' ? 'uk/news' : 'en/news';
+  const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folder}`;
 
   try {
-    // Отримуємо список файлів з GitHub API
-    const repoOwner = 'lorry-ua';
-    const repoName = 'connecta-site';
-    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folder}`;
-
     const response = await fetch(apiUrl);
-    if (!response.ok) throw new Error('Не вдалось завантажити новини');
+    if (!response.ok) throw new Error('Помилка');
 
     const files = await response.json();
     const mdFiles = files.filter(f => f.name.endsWith('.md'));
@@ -122,7 +122,6 @@ async function loadNews(lang) {
       return;
     }
 
-    // Завантажуємо кожен файл
     const newsItems = await Promise.all(
       mdFiles.map(async file => {
         const fileResponse = await fetch(file.download_url);
@@ -131,17 +130,15 @@ async function loadNews(lang) {
       })
     );
 
-    // Сортуємо за датою (новіші першими)
     newsItems.sort((a, b) => {
       const dateA = a.date ? a.date.split('.').reverse().join('') : '0';
       const dateB = b.date ? b.date.split('.').reverse().join('') : '0';
       return dateB.localeCompare(dateA);
     });
 
-    // Будуємо HTML картки
     newsGrid.innerHTML = newsItems.map(item => `
       <article class="news-card">
-       ${item.image ? `<img src="${item.image}" alt="${item.title}" style="width:100%;height:auto;border-radius:8px;margin-bottom:8px;">` : ''}
+        ${item.image ? `<img src="${item.image}" alt="${item.title}" style="width:100%;height:auto;border-radius:8px;margin-bottom:8px;">` : ''}
         <div class="news-card__tag">${item.tag || (lang === 'uk' ? 'Новина' : 'News')}</div>
         <div class="news-card__date">${item.date || ''}</div>
         <h3 class="news-card__title">${item.title || ''}</h3>
@@ -156,85 +153,6 @@ async function loadNews(lang) {
 
   } catch (error) {
     console.error('Помилка завантаження новин:', error);
-  }
-}
-
-// ── CONTACT FORM ──
-const form = document.getElementById('contact-form');
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const btn = form.querySelector('button[type="submit"]');
-  const originalText = btn.textContent;
-
-  const formData = new FormData(form);
-
-  try {
-    await fetch('/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(formData).toString()
-    });
-
-    btn.textContent = currentLang === 'uk' ? '✓ Надіслано!' : '✓ Sent!';
-    btn.style.background = '#22c55e';
-    btn.style.color = '#fff';
-    form.reset();
-
-    setTimeout(() => {
-      btn.textContent = originalText;
-      btn.style.background = '';
-      btn.style.color = '';
-    }, 3000);
-
-  } catch (error) {
-    btn.textContent = currentLang === 'uk' ? '✗ Помилка. Спробуй ще.' : '✗ Error. Try again.';
-    btn.style.background = '#ef4444';
-    btn.style.color = '#fff';
-    setTimeout(() => {
-      btn.textContent = originalText;
-      btn.style.background = '';
-      btn.style.color = '';
-    }, 3000);
-  }
-});
-
-// ── LOAD PARTNERS ──
-async function loadPartners() {
-  const grid = document.getElementById('partners-grid');
-  if (!grid) return;
-
-  const repoOwner = 'lorry-ua';
-  const repoName = 'connecta-site';
-  const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/partners`;
-
-  try {
-    const response = await fetch(apiUrl);
-    const files = await response.json();
-    const mdFiles = files.filter(f => f.name.endsWith('.md'));
-
-    if (mdFiles.length === 0) return;
-
-    const partners = await Promise.all(
-      mdFiles.map(async file => {
-        const fileResponse = await fetch(file.download_url);
-        const text = await fileResponse.text();
-        return parseFrontmatter(text);
-      })
-    );
-
-    grid.innerHTML = partners.map(partner => `
-      <div class="partner-item">
-        ${partner.url
-          ? `<a href="${partner.url}" target="_blank" rel="noopener">
-               <img src="${partner.logo}" alt="${partner.title}">
-             </a>`
-          : `<img src="${partner.logo}" alt="${partner.title}">`
-        }
-      </div>
-    `).join('');
-
-  } catch (error) {
-    console.error('Помилка завантаження партнерів:', error);
   }
 }
 
@@ -279,8 +197,86 @@ async function loadProjects(lang) {
   }
 }
 
+// ── LOAD PARTNERS ──
+async function loadPartners() {
+  const grid = document.getElementById('partners-grid');
+  if (!grid) return;
+
+  const repoOwner = 'lorry-ua';
+  const repoName = 'connecta-site';
+  const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/partners`;
+
+  try {
+    const response = await fetch(apiUrl);
+    const files = await response.json();
+    const mdFiles = files.filter(f => f.name.endsWith('.md'));
+
+    if (mdFiles.length === 0) return;
+
+    const partners = await Promise.all(
+      mdFiles.map(async file => {
+        const fileResponse = await fetch(file.download_url);
+        const text = await fileResponse.text();
+        return parseFrontmatter(text);
+      })
+    );
+
+    grid.innerHTML = partners.map(partner => `
+      <div class="partner-item">
+        ${partner.url
+          ? `<a href="${partner.url}" target="_blank" rel="noopener">
+               <img src="${partner.logo}" alt="${partner.title}">
+             </a>`
+          : `<img src="${partner.logo}" alt="${partner.title}">`
+        }
+      </div>
+    `).join('');
+
+  } catch (error) {
+    console.error('Помилка завантаження партнерів:', error);
+  }
+}
+
+// ── CONTACT FORM ──
+const form = document.getElementById('contact-form');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = form.querySelector('button[type="submit"]');
+  const originalText = btn.textContent;
+
+  const formData = new FormData(form);
+
+  try {
+    await fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(formData).toString()
+    });
+
+    btn.textContent = currentLang === 'uk' ? '✓ Надіслано!' : '✓ Sent!';
+    btn.style.background = '#22c55e';
+    btn.style.color = '#fff';
+    form.reset();
+
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 3000);
+
+  } catch (error) {
+    btn.textContent = currentLang === 'uk' ? '✗ Помилка. Спробуй ще.' : '✗ Error. Try again.';
+    btn.style.background = '#ef4444';
+    btn.style.color = '#fff';
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 3000);
+  }
+});
+
 // ── INIT ──
 setLang(currentLang);
 observeCards();
 loadPartners();
-loadProjects(currentLang);
